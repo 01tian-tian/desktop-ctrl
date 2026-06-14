@@ -1,6 +1,6 @@
-# desktop-control
+# Windows-Desktop-Ctrl-SKILL
 
-`desktop-control` 是一个专为 Windows 桌面设计的自动化控制工具，它通过命令行接口提供了一系列强大的功能，旨在简化和自动化图形用户界面（GUI）任务。无论是进行屏幕截图、模拟鼠标键盘操作，还是管理剪贴板内容，`desktop-control` 都能够提供高效且可靠的解决方案。
+`Windows-Desktop-Ctrl-SKILL` 是一个专为 Windows 桌面设计的自动化控制工具，它通过命令行接口提供了一系列强大的功能，旨在简化和自动化图形用户界面（GUI）任务。无论是进行屏幕截图、模拟鼠标键盘操作，还是管理剪贴板内容，`Windows-Desktop-Ctrl-SKILL` 都能够提供高效且可靠的解决方案。
 
 ## 核心功能
 
@@ -31,7 +31,7 @@
 
 ## Agent 工作流
 
-`desktop-control` 的设计理念是支持 Agent 进行桌面自动化任务，其典型工作流遵循以下循环模式：
+`Windows-Desktop-Ctrl-SKILL` 的设计理念是支持 Agent 进行桌面自动化任务，其典型工作流遵循以下循环模式：
 
 ```
 截图 → 分析 → 执行 → 截图验证 → 循环
@@ -39,7 +39,7 @@
 
 1.  **截图**：获取当前屏幕的实时状态。
 2.  **分析**：对截图进行图像识别和分析，以识别用户界面元素及其精确坐标。
-3.  **执行**：根据分析结果，调用 `desktop-control` 命令执行相应的桌面操作。
+3.  **执行**：根据分析结果，调用 `Windows-Desktop-Ctrl-SKILL` 命令执行相应的桌面操作。
 4.  **验证**：再次进行屏幕截图，以确认上一步操作是否成功并达到预期效果。
 5.  **循环**：重复上述步骤，直至整个自动化任务完成。
 
@@ -47,19 +47,19 @@
 
 ## 坐标系
 
-`desktop-control` 采用归一化坐标系 `[0, 1]`，这使得它能够与视觉语言模型（VLM）的输出无缝对接。在该坐标系中：
+`Windows-Desktop-Ctrl-SKILL` 采用归一化坐标系 `[0, 1]`，这使得它能够与视觉语言模型（VLM）的输出无缝对接。在该坐标系中：
 
 - `(0,0)` 代表屏幕的左上角。
 - `(1,1)` 代表屏幕的右下角。
 
 ## 快速开始
 
-以下是使用 `desktop-control` 进行桌面自动化的一些基本示例：
+以下是使用 `Windows-Desktop-Ctrl-SKILL` 进行桌面自动化的一些基本示例：
 
 ### 1. 截图查看屏幕
 
 ```bash
-./desktop-ctrl screenshot
+./Windows-Desktop-Ctrl-SKILL screenshot
 # 命令执行后，截图将保存到 Temp/screenshot.png。您可以通过分析此图片来识别屏幕内容。
 # 输出示例: {"ok":true,"path":"...","width":1920,"height":1200}
 ```
@@ -69,7 +69,7 @@
 假设通过截图分析得到目标按钮位于屏幕的 `(0.5, 0.5)` 处（屏幕中心）：
 
 ```bash
-./desktop-ctrl click --x 0.5 --y 0.5
+./Windows-Desktop-Ctrl-SKILL click --x 0.5 --y 0.5
 ```
 
 ### 3. 输入文本
@@ -77,7 +77,7 @@
 在已激活的文本输入框中输入内容：
 
 ```bash
-./desktop-ctrl type --text "Hello, Manus AI!"
+./Windows-Desktop-Ctrl-SKILL type --text "Hello, Manus AI!"
 ```
 
 ### 4. 验证结果
@@ -85,7 +85,7 @@
 操作完成后，再次截图以验证操作是否成功：
 
 ```bash
-./desktop-ctrl screenshot
+./Windows-Desktop-Ctrl-SKILL screenshot
 # 分析新的截图，确认操作结果。
 ```
 
@@ -93,22 +93,22 @@
 
 | 命令类型   | 命令示例                                                               | 描述                                                                 |
 | :--------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------- |
-| **截图**   | `desktop-ctrl screenshot`                                              | 截取屏幕并保存为 `Temp/screenshot.png`。                             |
-| **鼠标**   | `desktop-ctrl click --x 0.5 --y 0.5`                                   | 在指定归一化坐标处进行左键单击。                                     |
-|            | `desktop-ctrl double-click --x 0.5 --y 0.5`                            | 在指定归一化坐标处进行双击。                                         |
-|            | `desktop-ctrl right-click --x 0.5 --y 0.5`                             | 在指定归一化坐标处进行右键单击。                                     |
-|            | `desktop-ctrl mouse-move --x 0.5 --y 0.5`                              | 将鼠标移动到指定归一化坐标。                                         |
-|            | `desktop-ctrl drag --sx 0.1 --sy 0.1 --ex 0.9 --ey 0.9`                | 从 `(sx, sy)` 拖拽到 `(ex, ey)`。                                     |
-| **键盘**   | `desktop-ctrl type --text "Hello World"`                               | 输入指定文本。                                                       |
-|            | `desktop-ctrl hotkey --keys "ctrl+shift+n"`                            | 模拟热键组合。                                                       |
-|            | `desktop-ctrl press --key shift`                                       | 按下指定按键（不释放）。                                             |
-|            | `desktop-ctrl release --key shift`                                     | 释放指定按键。                                                       |
-| **滚动**   | `desktop-ctrl scroll --x 0.5 --y 0.5 --direction down`                 | 在指定坐标处向下滚动。`direction` 可选 `up/down/left/right`。       |
-| **剪贴板** | `desktop-ctrl clipboard --get`                                         | 获取剪贴板内容。                                                     |
-|            | `desktop-ctrl clipboard --set "要复制的内容"`                          | 设置剪贴板内容。                                                     |
-| **其他**   | `desktop-ctrl wait --ms 1000`                                          | 等待 1000 毫秒。                                                     |
-|            | `desktop-ctrl screen-size`                                             | 获取屏幕尺寸信息。                                                   |
-|            | `desktop-ctrl info`                                                    | 获取工具版本和平台信息。                                             |
+| **截图**   | `Windows-Desktop-Ctrl-SKILL screenshot`                                              | 截取屏幕并保存为 `Temp/screenshot.png`。                             |
+| **鼠标**   | `Windows-Desktop-Ctrl-SKILL click --x 0.5 --y 0.5`                                   | 在指定归一化坐标处进行左键单击。                                     |
+|            | `Windows-Desktop-Ctrl-SKILL double-click --x 0.5 --y 0.5`                            | 在指定归一化坐标处进行双击。                                         |
+|            | `Windows-Desktop-Ctrl-SKILL right-click --x 0.5 --y 0.5`                             | 在指定归一化坐标处进行右键单击。                                     |
+|            | `Windows-Desktop-Ctrl-SKILL mouse-move --x 0.5 --y 0.5`                              | 将鼠标移动到指定归一化坐标。                                         |
+|            | `Windows-Desktop-Ctrl-SKILL drag --sx 0.1 --sy 0.1 --ex 0.9 --ey 0.9`                | 从 `(sx, sy)` 拖拽到 `(ex, ey)`。                                     |
+| **键盘**   | `Windows-Desktop-Ctrl-SKILL type --text "Hello World"`                               | 输入指定文本。                                                       |
+|            | `Windows-Desktop-Ctrl-SKILL hotkey --keys "ctrl+shift+n"`                            | 模拟热键组合。                                                       |
+|            | `Windows-Desktop-Ctrl-SKILL press --key shift`                                       | 按下指定按键（不释放）。                                             |
+|            | `Windows-Desktop-Ctrl-SKILL release --key shift`                                     | 释放指定按键。                                                       |
+| **滚动**   | `Windows-Desktop-Ctrl-SKILL scroll --x 0.5 --y 0.5 --direction down`                 | 在指定坐标处向下滚动。`direction` 可选 `up/down/left/right`。       |
+| **剪贴板** | `Windows-Desktop-Ctrl-SKILL clipboard --get`                                         | 获取剪贴板内容。                                                     |
+|            | `Windows-Desktop-Ctrl-SKILL clipboard --set "要复制的内容"`                          | 设置剪贴板内容。                                                     |
+| **其他**   | `Windows-Desktop-Ctrl-SKILL wait --ms 1000`                                          | 等待 1000 毫秒。                                                     |
+|            | `Windows-Desktop-Ctrl-SKILL screen-size`                                             | 获取屏幕尺寸信息。                                                   |
+|            | `Windows-Desktop-Ctrl-SKILL info`                                                    | 获取工具版本和平台信息。                                             |
 
 ## 注意事项
 
