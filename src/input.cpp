@@ -185,29 +185,23 @@ bool mouseDrag(double sx, double sy, double ex, double ey) {
     SetCursorPos(start.x, start.y);
     Sleep(50);
 
-    INPUT inputs[3] = {};
-
-    inputs[0].type = INPUT_MOUSE;
-    inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+    INPUT input = {};
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+    SendInput(1, &input, sizeof(INPUT));
+    Sleep(10);
 
     int steps = 20;
     for (int i = 1; i <= steps; ++i) {
         LONG cx = start.x + (end.x - start.x) * i / steps;
         LONG cy = start.y + (end.y - start.y) * i / steps;
-
-        inputs[1].type = INPUT_MOUSE;
-        inputs[1].mi.dx = cx;
-        inputs[1].mi.dy = cy;
-        inputs[1].mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK;
-        SendInput(1, &inputs[1], sizeof(INPUT));
+        SetCursorPos(cx, cy);
         Sleep(10);
     }
 
-    inputs[2].type = INPUT_MOUSE;
-    inputs[2].mi.dwFlags = MOUSEEVENTF_LEFTUP;
-
-    SendInput(1, &inputs[0], sizeof(INPUT));
-    SendInput(1, &inputs[2], sizeof(INPUT));
+    input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+    SendInput(1, &input, sizeof(INPUT));
+    Sleep(10);
 
     return true;
 }
@@ -276,11 +270,11 @@ bool typeText(const std::string& text) {
         CloseClipboard();
     }
 
-    // Convert ANSI to wide string (system default code page)
-    int wideLen = MultiByteToWideChar(CP_ACP, 0, content.c_str(), -1, NULL, 0);
+    // Convert UTF-8 to wide string
+    int wideLen = MultiByteToWideChar(CP_UTF8, 0, content.c_str(), -1, NULL, 0);
     if (wideLen > 0) {
         std::wstring wideContent(wideLen, 0);
-        MultiByteToWideChar(CP_ACP, 0, content.c_str(), -1, &wideContent[0], wideLen);
+        MultiByteToWideChar(CP_UTF8, 0, content.c_str(), -1, &wideContent[0], wideLen);
         wideContent.pop_back(); // Remove null terminator
 
         if (OpenClipboard(NULL)) {
@@ -392,6 +386,19 @@ bool releaseKey(const std::string& key) {
 bool waitMs(int ms) {
     Sleep(ms);
     return true;
+}
+
+CursorPos getCursorPos() {
+    CursorPos pos = {0, 0, 0.0, 0.0};
+    POINT pt;
+    if (GetCursorPos(&pt)) {
+        pos.x = pt.x;
+        pos.y = pt.y;
+        ScreenInfo info = getScreenInfo();
+        pos.normalizedX = static_cast<double>(pt.x) / info.logicalWidth;
+        pos.normalizedY = static_cast<double>(pt.y) / info.logicalHeight;
+    }
+    return pos;
 }
 
 } // namespace desktop_ctrl

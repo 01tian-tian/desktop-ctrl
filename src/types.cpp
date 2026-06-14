@@ -80,6 +80,14 @@ std::string JsonOutput::toJson() const {
     if (!platform.empty()) {
         oss << ",\"platform\":\"" << platform << "\"";
     }
+    if (x != 0 || y != 0) {
+        oss << ",\"x\":" << x;
+        oss << ",\"y\":" << y;
+    }
+    if (normalizedX != 0.0 || normalizedY != 0.0) {
+        oss << ",\"normalizedX\":" << normalizedX;
+        oss << ",\"normalizedY\":" << normalizedY;
+    }
 
     oss << "}";
     return oss.str();

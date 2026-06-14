@@ -18,4 +18,13 @@ bool pressKey(const std::string& key);
 bool releaseKey(const std::string& key);
 bool waitMs(int ms);
 
+struct CursorPos {
+    long x;
+    long y;
+    double normalizedX;
+    double normalizedY;
+};
+
+CursorPos getCursorPos();
+
 } // namespace desktop_ctrl

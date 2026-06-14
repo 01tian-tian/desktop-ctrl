@@ -209,6 +209,19 @@ int main(int argc, char* argv[]) {
         return out.ok ? 0 : 2;
     }
 
+    if (cmd == "cursor-pos") {
+        desktop_ctrl::CursorPos pos = desktop_ctrl::getCursorPos();
+        out.ok = true;
+        out.x = pos.x;
+        out.y = pos.y;
+        out.normalizedX = pos.normalizedX;
+        out.normalizedY = pos.normalizedY;
+        out.width = desktop_ctrl::getScreenInfo().logicalWidth;
+        out.height = desktop_ctrl::getScreenInfo().logicalHeight;
+        std::cout << out.toJson() << std::endl;
+        return 0;
+    }
+
     out.ok = false;
     out.error = "Unknown command: " + cmd;
     std::cerr << out.toJson() << std::endl;
